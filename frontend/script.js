@@ -29,7 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
         clearPreviousResults();
 
         try {
-            const backendUrl = "https://comment-sentiment-analyzer.onrender.com"; 
+            // FIXED: The endpoint /analyze has been added to the URL
+            const backendUrl = "https://comment-sentiment-analyzer.onrender.com/analyze"; 
             const response = await fetch(backendUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -39,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (!response.ok) {
-                // Use the 'detail' field from FastAPI for specific errors
                 throw new Error(data.detail || "An unexpected error occurred.");
             }
             
@@ -55,22 +55,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /**
      * Renders the results on the page.
-     * @param {object} data - The sentiment data { positive: number, negative: number }
      */
     function displayResults(data) {
         resultsSection.style.display = 'flex';
-        // Use a short delay to allow the CSS transition to be visible
         setTimeout(() => resultsSection.classList.add('visible'), 10);
 
-        const { positive, negative } = data;
-        const total = positive + negative;
+        // UPDATED: Now includes the 'neutral' category from the backend
+        const { positive, neutral, negative } = data;
+        const total = positive + neutral + negative;
 
         if (total === 0) {
             summaryContainer.innerHTML = '<h3>No comments were found to analyze.</h3>';
+            chartCanvas.style.display = 'none'; // Hide chart if no comments
             return;
         }
+        chartCanvas.style.display = 'block';
 
-        // Update summary text
+        // UPDATED: Summary now includes neutral stats and icon
         summaryContainer.innerHTML = `
             <h3>Sentiment Breakdown</h3>
             <div class="stat">
@@ -81,34 +82,44 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
             <div class="stat">
+                <i class="fa-solid fa-face-meh stat-icon neutral"></i>
+                <div>
+                    <strong>${neutral} Neutral</strong>
+                    <small>(${((neutral / total) * 100).toFixed(1)}%)</small>
+                </div>
+            </div>
+            <div class="stat">
                 <i class="fa-solid fa-face-frown stat-icon negative"></i>
-                 <div>
+                <div>
                     <strong>${negative} Negative</strong>
                     <small>(${((negative / total) * 100).toFixed(1)}%)</small>
                 </div>
             </div>
         `;
         
-        // Create or update the pie chart
         renderPieChart(data);
     }
 
     /**
      * Renders a pie chart with Chart.js
-     * @param {object} data - The sentiment data
      */
     function renderPieChart(data) {
         if (sentimentChart) {
             sentimentChart.destroy();
         }
-
+        
+        // UPDATED: Chart now includes neutral data and colors
         sentimentChart = new Chart(chartCanvas.getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: ['Positive', 'Negative'],
+                labels: ['Positive', 'Neutral', 'Negative'],
                 datasets: [{
-                    data: [data.positive, data.negative],
-                    backgroundColor: ['#20c997', '#fd7e14'],
+                    data: [data.positive, data.neutral, data.negative],
+                    backgroundColor: [
+                        '#20c997', // Positive
+                        '#6c757d', // Neutral
+                        '#fd7e14'  // Negative
+                    ],
                     borderColor: 'rgba(255, 255, 255, 0.8)',
                     borderWidth: 4,
                     hoverOffset: 10,
@@ -144,14 +155,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function showError(message) {
         errorMessage.textContent = message;
-        // The error message will fade out after 5 seconds
         setTimeout(() => errorMessage.textContent = '', 5000);
     }
     
     function clearPreviousResults() {
         errorMessage.textContent = '';
         resultsSection.classList.remove('visible');
-        // A delay is needed to allow the fade-out animation to complete before hiding the element
         setTimeout(() => {
             if (!resultsSection.classList.contains('visible')) {
                  resultsSection.style.display = 'none';
