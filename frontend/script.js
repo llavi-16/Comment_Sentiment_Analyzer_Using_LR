@@ -29,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearPreviousResults();
 
         try {
-            // Replace with your deployed Render URL if applicable
-            const backendUrl = "http://127.0.0.1:8000/analyze"; 
+            const backendUrl = "https://comment-sentiment-analyzer.onrender.com"; 
             const response = await fetch(backendUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
