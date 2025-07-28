@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubePulse - AI Sentiment Analyzer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Your Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob-1"></div>
+        <div class="blob-2"></div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+            <h1>TubePulse</h1>
+        </div>
+    </header>
+
+    <main>
+        <section class="analyzer-container">
+            <div class="intro-text">
+                <h2>Dive into the Heart of Comments</h2>
+                <p>Uncover the true sentiment behind YouTube videos with AI-powered analysis.</p>
+            </div>
+
+            <div class="input-card">
+                <i class="fa-brands fa-youtube youtube-icon"></i>
+                <input id="videoUrlInput" type="text" placeholder="Paste any YouTube video link here...">
+                <button id="analyzeButton" aria-label="Analyze Comments">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Analyze</span>
+                </button>
+            </div>
+            <p id="errorMessage" class="error-message"></p>
+
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <div class="chart-container">
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+                <div id="summaryContainer" class="summary-container">
+                    <!-- Summary stats will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 TubePulse. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Your Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
